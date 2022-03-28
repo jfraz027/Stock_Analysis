@@ -18,10 +18,7 @@ Comparison of stocks based on price change and percent change
 Identify positive and negative changes by color: Red (-) and Green (+) 
 Comparison of stocks with greatest increase, decrease and total volume 
 
-What makes your project stand out?
-Your README might also describe some of the challenges you faced, as well as the features you plan to implement in the future. And if your project is deployed, make sure to include a link to the deployed application so people can see it in action!
-
-Prerequisites
+# Prerequisites
 Microsoft® Excel® for Microsoft 365 MSO (Version 2202 Build 16.0.14931.20128) 64-bit 
 Micrososft Visual Basic Applications for 7.1 
 Run File in VBS
