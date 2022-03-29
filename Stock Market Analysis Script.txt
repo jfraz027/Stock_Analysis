@@ -1,0 +1,99 @@
+					Stock Market Analysis Script
+
+Sub Stock_Market_Data():
+    'Loop Through Each Worksheets
+    For Each ws In Worksheets
+        'Set initial variable for Holding ticker Symbol
+        Dim TickerSymb As String
+        'Set initial variable for Holding Total Stock Volume
+        Dim TotalStockVolume As Double
+        TotalStockVolume = 0
+        'Set variable for Yearly Price Change
+        Dim YearlyOpenPrice As Double
+        Dim YearlyClosePrice As Double
+        'Set Ticker Title Column
+        ws.Range("I1").Value = "Ticker"
+        'Set Yearly Change Title Column
+        ws.Range("J1").Value = "Yearly Change"
+        'Set Percent Change Title Column
+        ws.Range("K1").Value = "Percent Change"
+        'Set Stock Volume Title Column
+        ws.Range("L1").Value = "Total Stock Volume"
+        'Set Variables to show results in Last Row
+        Dim LRow As Long
+        Dim LRowVal As Long
+        'Set variable for Holding Yearly Change
+        Dim PreviousPrice As Long
+        PreviousPrice = 2
+        Dim YearlyChange As Double
+        YearlyClosePrice = 0
+        'Set variable for Holding Percent Change
+        Dim PercentChange As Double
+        'Keep track of Stock in Table Summary
+        Dim StockSummaryTable As Long
+        StockSummaryTable = 2
+        'Set Last Row
+        LRow = ws.Cells(Rows.Count, 1).End(xlUp).Row
+        For i = 2 To LRow
+            'Sum up the Total Stock Volume for the same Ticker Symbol
+            TotalStockVolume = TotalStockVolume + ws.Cells(i, 7).Value
+            TickerSymb = ws.Cells(i, 1).Value
+            If ws.Cells(i + 1, 1).Value <> ws.Cells(i, 1).Value Then
+                'Set Titles and Values in the Stock Summary Table
+                ws.Range("I" & StockSummaryTable).Value = TickerSymb
+                'Calculate Total Stock Volume in the Summary Table
+                TotalStockVolume = TotalStockVolume + ws.Cells(i, 7).Value
+                ws.Range("L" & StockSummaryTable).Value = TotalStockVolume
+                'Calculate Yearly Price Change and Display in the Summary Table
+                YearlyOpenPrice = ws.Range("C" & PreviousPrice)
+                YearlyClosePrice = ws.Range("F" & i).Value
+                YearlyChange = YearlyClosePrice - YearlyOpenPrice
+                ws.Range("J" & StockSummaryTable).Value = YearlyChange
+                'Set Percent Change that is Not divisible by zero
+                If YearlyOpenPrice = 0 Then
+                    PercentChange = 0
+                Else
+                    YearlyOpenPrice = ws.Range("C" & PreviousPrice)
+                    PercentChange = YearlyChange / YearlyOpenPrice
+                End If
+                'Format the Cells to show as percentage
+                ws.Range("K" & StockSummaryTable).Value = PercentChange
+                ws.Range("K" & StockSummaryTable).NumberFormat = "0.00%"
+                'Set Conditional Formatting for Cells Green for Positive and Red for Negative
+                If ws.Range("J" & StockSummaryTable).Value >= 0 Then
+                    ws.Range("J" & StockSummaryTable).Interior.ColorIndex = 4
+                Else
+                    ws.Range("J" & StockSummaryTable).Interior.ColorIndex = 3
+                End If
+                'Resets the opening conditions for the next ticker.
+                StockSummaryTable = StockSummaryTable + 1
+                TotalStockVolume = 0
+                PreviousPrice = i + 1
+                YearlyClosePrice = 0
+            End If
+            'Set Columns for Bonus
+        ws.Range("O2").Value = "Greatest % Increase"
+        ws.Range("O3").Value = "Greatest % Decrease"
+        ws.Range("O4").Value = "Greatest Total Volume"
+        ws.Range("P1").Value = "Ticker Symbol"
+        ws.Range("Q1").Value = "Stock Results"
+        If ws.Range("K" & i).Value > ws.Range("Q2").Value Then
+            ws.Range("Q2").Value = ws.Range("K" & i).Value
+            ws.Range("P2").Value = ws.Range("I" & i).Value
+        End If
+        If ws.Range("K" & i).Value < ws.Range("Q3").Value Then
+            ws.Range("Q3").Value = ws.Range("K" & i).Value
+            ws.Range("P3").Value = ws.Range("I" & i).Value
+        End If
+        If ws.Range("L" & i).Value > ws.Range("Q4").Value Then
+            ws.Range("Q4").Value = ws.Range("L" & i).Value
+            ws.Range("P4").Value = ws.Range("I" & i).Value
+        End If
+        ' Format To Include % and Two Decimal Places
+        ws.Range("Q2").NumberFormat = "0.00%"
+        ws.Range("Q3").NumberFormat = "0.00%"
+        ' Format Number
+        ws.Range("Q4").NumberFormat = "000,000.00"
+        Next i
+    Next ws
+End Sub
